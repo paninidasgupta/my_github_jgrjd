@@ -125,7 +125,7 @@ class reg_plot():
 
     
     def draw_regression(self,vmin,vmax,inc,titlestr,cmap='RdBu',hatch='/'):
-        self.regress_map,self.cor_map,self.significant_map= self.regression_map_making()
+        regress_map,cor_map,significant_map= self.regression_map_making()
         ds1           =     xr.open_dataset(self.ex_filename)
         times         =     ds1.time
         lon           =     ds1.lon
@@ -151,9 +151,9 @@ class reg_plot():
         # m.drawmapboundary(fill_color='white')
         norm      =    mpl.colors.Normalize(vmin,vmax)
         v         =    np.arange(vmin,vmax+inc,inc)
-        cs        =    m.contourf(x,y,self.regress_map[0,:,:],v,norm=norm,extend='both',cmap=plt.cm.get_cmap(cmap))
+        cs        =    m.contourf(x,y,regress_map[0,:,:],v,norm=norm,extend='both',cmap=plt.cm.get_cmap(cmap))
         #levels=[0,1]
-        zm = np.ma.masked_equal(self.significant_map[0,:,:], 0)
+        zm = np.ma.masked_equal(significant_map[0,:,:], 0)
         m.contourf(x,y,zm, hatches=hatch,alpha=0.)
         cbar0     = plt.colorbar(cs,orientation='horizontal',fraction=0.05)
         plt.title(titlestr)
@@ -162,7 +162,7 @@ class reg_plot():
     
     
     def draw_correlation(self,significant_value,vmin,vmax,inc,titlestr,cmap='RdBu',hatch='/'):
-        self.regress_map,self.cor_map,self.significant_map=self.regression_map_making()
+        regress_map,cor_map,significant_map=self.regression_map_making()
         ds1=xr.open_dataset(self.ex_filename)
         times=ds1.time
         lon=ds1.lon
@@ -183,10 +183,10 @@ class reg_plot():
         # m.drawmapboundary(fill_color='white')
         norm = mpl.colors.Normalize(vmin,vmax)
         v=np.arange(vmin,vmax+inc,inc)
-        cs = m.contourf(x,y,self.cor_map[0,:,:],v,norm=norm,extend='both',cmap=plt.cm.get_cmap(cmap))
+        cs = m.contourf(x,y,cor_map[0,:,:],v,norm=norm,extend='both',cmap=plt.cm.get_cmap(cmap))
         #levels=[0,1]
         #m.contourf(x,y,sig[0,:,:], 2, hatches=["", "/"],alpha=0)
-        m.contour(x, y, self.cor_map[0,:,:], levels=[-1*significant_value,significant_value], linewidths=0.5, colors='black', antialiased=True)
+        m.contour(x, y, cor_map[0,:,:], levels=[-1*significant_value,significant_value], linewidths=0.5, colors='black', antialiased=True)
         cbar0 = plt.colorbar(cs,orientation='horizontal',fraction=0.05)
         plt.title(titlestr) 
         plt.show()
