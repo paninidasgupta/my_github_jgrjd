@@ -35,7 +35,7 @@ def detrend(time_series,order):
     return detrended,slope,intercept
     
 
-def linear_regress(yy,xx,p):
+def linear_regress(xx,yy,p):
     yy                    =    np.squeeze(np.asarray(yy))
     xx                    =    np.squeeze(np.asarray(xx))
 
@@ -157,9 +157,9 @@ class reg_plot():
         m.contourf(x,y,zm, hatches=hatch,alpha=0.)
         cbar0     = plt.colorbar(cs,orientation='horizontal',fraction=0.05)
         plt.title(titlestr)
-	plt.show()
+
         return print("myferret")
-        
+    
     
     def draw_correlation(self,significant_value,vmin,vmax,inc,titlestr,cmap='RdBu',hatch='/'):
         self.regress_map,self.cor_map,self.significant_map=self.regression_map_making()
@@ -190,5 +190,5 @@ class reg_plot():
         cbar0 = plt.colorbar(cs,orientation='horizontal',fraction=0.05)
         plt.title(titlestr) 
         plt.show()
-        return print("myferret")
+        #return print("myferret")
 
