@@ -1,0 +1,6 @@
+This is a git repository.
+This is a python module for
+1. Linear regression analyis
+2. detrending
+3. Plotting linearly regressed meterological variable.
+4. Plotting correlation map.
