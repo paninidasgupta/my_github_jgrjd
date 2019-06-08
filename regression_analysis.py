@@ -68,28 +68,41 @@ def linear_regress(xx,yy,p):
     return slope,intercept,p1,corr 
 
 
+def write_to_netcdf(data_map,output_filename,ex_filename='',varname_ex=''):
+    ## for 3D file structure
+    d         =   data_map
+    ds1       =   xr.open_dataset(ex_filename)
+    times     =   ds1.time
+    lon       =   ds1.lon
+    lat       =   ds1.lat
+    dk2       =   ds1
+
+    t         =   xr.DataArray(d,coords=[('time', times),('lat', lat),('lon', lon)])
+    dk2[varname_ex]=t
+    print (dk2.coords)
+    print ('finished saving')
+    dk2.to_netcdf(output_filename)
+
+    return  print("Thank you")
+
+
 class reg_plot(): 
     
     """Plotting the regression map with significance """
     """Plotting the correlation map with significance"""
    
     
-    def __init__(self,time_series=[],data_name='',ex_filename='',varname_data='',varname_ex='',p=0,order=1):
+    def __init__(self,time_series=[],data_name='',varname_data='',p=0):
         self.time_series  = time_series 
         self.data_name    = data_name
-        self.ex_filename  = ex_filename
         self.varname_data = varname_data
-        self.varname_ex   = varname_ex
         self.p            = p
-        self.order        = order
     
     def explain_to(self):
         print("Hello, users. These are inputs:")
         print("Your time series is {}.".format(self.time_series))
         print("Your data filename is {}.".format(self.data_name))
-        print("Your example filename is {}.".format(self.ex_filename))
         print("Your variable name is {}.".format(self.varname_data))
-        print("Your variable name in example file is {}.".format(self.varname_ex))
         print("confidence value is {}.".format(self.p))
         
 
@@ -98,15 +111,13 @@ class reg_plot():
 
         data_f     =      xr.open_dataset(self.data_name)
         data       =      data_f[self.varname_data].values
+        shape      =      [1,data.shape[1],data.shape[2]]
+        regress_map=      np.zeros((shape))
+        cor_map    =      np.zeros((shape))
+        significant_map=  np.zeros((shape))
 
-        ex         =      xr.open_dataset(self.ex_filename)
-        data1      =      ex[self.varname_ex].values
-        regress_map=      np.zeros((data1.shape))
-        cor_map    =      np.zeros((data1.shape))
-        significant_map=  np.zeros((data1.shape))
-
-        for i in range(data1.shape[2]):
-            for j in range(data1.shape[1]): 
+        for i in range(data.shape[2]):
+            for j in range(data.shape[1]): 
                 temp              = data[:,j,i]
                 if np.all(np.isnan(temp)):
                     regress_map[0,j,i]= math.nan
@@ -126,8 +137,7 @@ class reg_plot():
     
     def draw_regression(self,vmin,vmax,inc,titlestr,cmap='RdBu',hatch='/'):
         regress_map,cor_map,significant_map= self.regression_map_making()
-        ds1           =     xr.open_dataset(self.ex_filename)
-        times         =     ds1.time
+        ds1           =     xr.open_dataset(self.data_name)
         lon           =     ds1.lon
         lat           =     ds1.lat
 
@@ -163,8 +173,7 @@ class reg_plot():
     
     def draw_correlation(self,significant_value,vmin,vmax,inc,titlestr,cmap='RdBu',hatch='/'):
         regress_map,cor_map,significant_map=self.regression_map_making()
-        ds1=xr.open_dataset(self.ex_filename)
-        times=ds1.time
+        ds1=xr.open_dataset(self.data_name)
         lon=ds1.lon
         lat=ds1.lat
         # m = Basemap(projection='ortho',lat_0=0,lon_0=-180,resolution='l')
@@ -190,5 +199,8 @@ class reg_plot():
         cbar0 = plt.colorbar(cs,orientation='horizontal',fraction=0.05)
         plt.title(titlestr) 
         plt.show()
-        #return print("myferret")
+        return print("myferret")
+        
+        
+    
 
