@@ -120,8 +120,8 @@ class reg_plot():
             for j in range(data.shape[1]): 
                 temp              = data[:,j,i]
                 if np.all(np.isnan(temp)):
-                    regress_map[0,j,i]= math.nan
-                    cor_map[0,j,i]    = math.nan
+                    regress_map[0,j,i]= np.nan
+                    cor_map[0,j,i]    = np.nan
                 else:
                     slope,intercept,p1,corr=linear_regress(self.time_series,temp,self.p)
                     regress_map[0,j,i]= slope
